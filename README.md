@@ -94,9 +94,10 @@ Files older than 7 days are cleaned up automatically by `/daily-create`.
 - [Claude Code](https://claude.ai/code)
 - Linear MCP plugin (optional — skills degrade gracefully if not available)
 
-## Road map
+## Roadmap
 
-[] Support other agents
-  - There is a chance that it will work without any problems with other Agents as well, but I didn't have time to test it.
-[] Support integrations with other tasks management systems
-[] ...
+- [ ] Allow users to add new issues during the day and rearrange their priority and order.
+
+- [ ] Support other agents. It may already work with other agents, but I haven’t tested it yet.
+
+- [ ] Support integrations with other issue tracking and project management tools.
