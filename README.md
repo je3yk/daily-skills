@@ -71,6 +71,28 @@ Skips a task. Asks for a reason, stores it as a note, and excludes the task from
 
 Deletes a daily plan and all associated files (plan JSON, summary Markdown, context files). Runs a safety check to avoid deleting context files still referenced by other plans. Supports `--dry-run` to preview what would be deleted.
 
+### `/daily-add-task [task-ids or descriptions]`
+
+Adds new tasks to today's plan and re-sorts it.
+
+- Accepts Linear issue IDs and/or free-form task descriptions as arguments
+- Falls back to interactive mode if no arguments provided
+- Re-sorts all active (not completed/skipped) tasks by priority after adding
+- Shows the updated plan for review before saving
+
+```
+/daily-add-task ENG-999 "Quick sync with design team"
+```
+
+### `/daily-standup`
+
+Prepares a short standup note from yesterday's data and today's plan.
+
+- Reads yesterday's summary (`.md`) if available; falls back to the plan JSON of the most recent past day
+- If today's plan doesn't exist yet, prompts to create it or allows skipping
+- Outputs three sections: **Yesterday**, **Today**, **Blockers**
+- Print only — nothing is saved
+
 ### `/daily-summary`
 
 Generates an end-of-day summary in Markdown — a factual recap of completed/skipped/in-progress tasks plus a reflection section. Prints to terminal and saves to `~/Documents/daily/YYYY-MM-DD-summary.md`. Ready to paste into Slack, Notion, or any other tool.
