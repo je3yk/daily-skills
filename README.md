@@ -118,7 +118,7 @@ Files older than 7 days are cleaned up automatically by `/daily-create`.
 
 ## Roadmap
 
-- [ ] Allow users to add new issues during the day and rearrange their priority and order.
+- [x] ~Allow users to add new issues during the day and rearrange their priority and order.~ Done, check **daily-add-task**
 
 - [ ] Support other agents. It may already work with other agents, but I haven’t tested it yet.
 
