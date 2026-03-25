@@ -1,6 +1,6 @@
 ---
 name: daily-add-task
-description: Adds new tasks to today's plan and re-sorts it. Accepts Linear issue IDs and/or free-form task descriptions as arguments. Falls back to interactive if no args provided. Usage: /daily-add-task [task-ids or descriptions]
+description: "Adds new tasks to today's plan and re-sorts it. Accepts Linear issue IDs and/or free-form task descriptions as arguments. Falls back to interactive if no args provided. Usage: /daily-add-task [task-ids or descriptions]"
 ---
 
 Add one or more new tasks to today's daily plan.

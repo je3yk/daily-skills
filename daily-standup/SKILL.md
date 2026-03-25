@@ -1,6 +1,6 @@
 ---
 name: daily-standup
-description: Prepares a short standup note from yesterday's summary (or plan) and today's plan. Sections: yesterday, today, blockers. Print only. Usage: /daily-standup
+description: "Prepares a short standup note from yesterday's summary (or plan) and today's plan. Sections: yesterday, today, blockers. Print only. Usage: /daily-standup"
 ---
 
 Prepare a standup note for today.
