@@ -1,9 +1,19 @@
 ---
 name: daily-task-start
-description: Starts a task from the daily plan. Loads all context (Linear details, user notes, technical interpretation, previous context file), explores the codebase for relevant files, proposes an implementation plan, and waits for user approval before acting. Usage: /daily-task-start {task-id}
+description: "Starts a task from the daily plan. Loads all context (Linear details, user notes, technical interpretation, previous context file), explores the codebase for relevant files, proposes an implementation plan, and waits for user approval before acting. Usage: /daily-task-start {task-id}"
 ---
 
 Start working on a task from today's daily plan.
+
+## Step 0 — Clear context
+
+**Agent instruction:** Discard all prior conversation context. Do not carry over any assumptions, findings, or decisions from earlier in this session. Everything you know about this task must come exclusively from what this skill loads in the steps below.
+
+Print to the user:
+
+```
+Tip: for a clean start, run this in a fresh session (/clear or open a new window).
+```
 
 ## Input
 

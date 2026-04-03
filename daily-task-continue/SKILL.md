@@ -1,9 +1,19 @@
 ---
 name: daily-task-continue
-description: Resumes a paused task by loading its saved context file and the latest task details, then presents a full briefing before starting work. Usage: /daily-task-continue {task-id}
+description: "Resumes a paused task by loading its saved context file and the latest task details, then presents a full briefing before starting work. Usage: /daily-task-continue {task-id}"
 ---
 
 Resume work on a paused task.
+
+## Step 0 — Clear context
+
+**Agent instruction:** Discard all prior conversation context. Do not carry over any assumptions, findings, or decisions from earlier in this session. Everything you know about this task must come exclusively from what this skill loads in the steps below.
+
+Print to the user:
+
+```
+Tip: for a clean start, run this in a fresh session (/clear or open a new window).
+```
 
 ## Input
 
