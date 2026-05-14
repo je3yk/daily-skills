@@ -97,6 +97,19 @@ Prepares a short standup note from yesterday's data and today's plan.
 
 Generates an end-of-day summary in Markdown — a factual recap of completed/skipped/in-progress tasks plus a reflection section. Prints to terminal and saves to `~/Documents/daily/YYYY-MM-DD-summary.md`. Ready to paste into Slack, Notion, or any other tool.
 
+### `/split-branch-for-review {target-branch}`
+
+Analyzes the current branch before opening a PR and recommends whether the diff should be split into smaller stacked branches.
+
+- Compares against the provided target branch, e.g. `main` or `origin/main`
+- Uses an ~800 changed-line target per layer, excluding generated files where possible
+- Requires every proposed stacked branch to keep the system working independently
+- Produces a proposed stack with scope, safety invariant, and verification steps
+
+```
+/split-branch-for-review origin/main
+```
+
 ## File structure
 
 Plans and context files are stored in `~/Documents/daily/`:
