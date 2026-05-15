@@ -22,10 +22,36 @@ If no target branch is provided, ask for it and stop until the user answers.
 
 - Do not push, rebase, cherry-pick, reset, or rewrite history unless the user explicitly asks.
 - Treat the target branch as the review base. Compare the current branch with the merge base of `HEAD` and the target branch.
-- Aim for stacked branches of about 800 changed lines each, counting additions plus deletions and excluding clearly generated files.
+- Count additions plus deletions per file. Exclude clearly auto-generated files from the review-size budget (see **Line budget** below).
 - A layer is valid only if it does not break the current system by itself.
 - Prefer fewer coherent branches over mechanical line-count slicing.
-- If a cohesive change is larger than 800 lines but splitting would make intermediate branches unsafe or confusing, say so.
+- Layer mixing (data model + API + UI in one PR) matters more than raw line count in the smaller tiers.
+- When splitting is warranted, aim for stacked branches of roughly 800 counted lines each, introducing one layer of change per branch where possible.
+- If a cohesive change is larger than 800 counted lines but splitting would make intermediate branches unsafe or confusing, say so.
+
+## Line budget
+
+**Counted lines** = additions + deletions, excluding auto-generated files.
+
+Always exclude from the count:
+
+- Vendor, lockfiles, build artifacts, and other paths matched by `scripts/diff-line-budget.sh`
+- Database migrations and schema migration folders (for example `**/migrations/**`, `**/db/migrate/**`, Alembic `versions/`, Django `migrations/`)
+
+If you are unsure whether a path is auto-generated, ask the developer which paths or globs to treat as generated for this repo before finalizing the verdict.
+
+### Size tiers
+
+Use counted lines (after exclusions) together with layer mixing to decide whether to split:
+
+| Tier | Counted lines | Default split stance |
+|------|---------------|----------------------|
+| Perfect | `< 100` | Probably keep as one PR unless multiple independent layers are mixed |
+| Good | `100–199` | Unlikely to need a split unless multiple layers are mixed |
+| Okay | `200–799` | Acceptable size; actively check whether a safer, layer-by-layer split is possible |
+| Large | `≥ 800` | Must evaluate splitting into smaller stacked branches, each introducing one layer where feasible |
+
+Tier guidance is advisory: a 150-line PR that mixes migrations, API, and UI may still warrant a split; a 900-line cohesive refactor with no safe intermediate layers may stay as one PR with an explicit rationale.
 
 ## Workflow
 
@@ -38,7 +64,8 @@ If no target branch is provided, ask for it and stop until the user answers.
    - Run `scripts/diff-line-budget.sh {target-branch}` if available.
    - Inspect `git diff --stat {target-branch}...HEAD`.
    - Inspect the actual diff, commit list, and changed file groups.
-   - Exclude generated/vendor/build artifacts from the review-size budget, but mention them if they affect risk.
+   - Apply the **Line budget** exclusions (including migrations). If any changed file might be generated but is not covered by defaults, ask the developer before locking the tier.
+   - Map counted lines to a **size tier** (Perfect / Good / Okay / Large).
 
 3. Classify the work into change groups:
    - Data model, migrations, schemas, generated clients.
@@ -55,11 +82,12 @@ If no target branch is provided, ask for it and stop until the user answers.
    - Database or persisted-data changes are backward-compatible.
    - Public APIs, contracts, and imports do not leave dependents broken.
 
-5. Recommend a split:
-   - If total counted changes are near or below 800 lines and the work is cohesive, recommend one PR.
-   - If changes are large or span multiple domains, propose a stack of branches.
-   - Keep each proposed layer reviewable, independently safe, and roughly 800 counted lines where possible.
-   - Explain any layer that exceeds the budget.
+5. Recommend a split (use size tier + layer mixing):
+   - **Perfect / Good:** Default to one PR when the work is a single layer. Split only when layers are mixed or a stacked sequence is clearly safer for review.
+   - **Okay:** Prefer one PR for cohesive single-layer work, but state whether a layer-by-layer stack would improve reviewability without breaking intermediate branches.
+   - **Large:** Default to evaluating a split. Propose a stack unless you can justify one PR (single layer, no safe split, or split would be more confusing).
+   - When splitting, keep each proposed layer reviewable, independently safe, and roughly ≤ 800 counted lines where possible.
+   - Explain any proposed layer that exceeds 800 counted lines.
 
 ## Output Format
 
@@ -73,7 +101,8 @@ Respond with:
 - Target branch: ...
 - Merge base: ...
 - Counted lines: ...
-- Generated or ignored lines: ...
+- Size tier: Perfect | Good | Okay | Large
+- Generated or ignored lines: ... (list paths/patterns excluded, including migrations)
 - Working tree state: ...
 
 ## Proposed Stack
@@ -95,4 +124,4 @@ Respond with:
 ```
 
 ## Optional Helper
-Use `scripts/diff-line-budget.sh {target-branch} [max-lines]` to count changed lines against the target branch while excluding common generated files. The helper is advisory; still inspect the diff before recommending a split.
+Use `scripts/diff-line-budget.sh {target-branch}` to count changed lines against the target branch while excluding common generated files and migrations. The script prints the matching **size tier**. The helper is advisory; still inspect the diff and layer mixing before recommending a split.
